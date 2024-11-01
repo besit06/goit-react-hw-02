@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
-import Feedback from './Feedback/Feedback.jsx'
-import Options from './Options/Options.jsx'
-import Notification from './Notification/Notification.jsx'
-import Statistics from './Statistics/Statistics.jsx'
-import './App.css'
+import Options from './Options/Options.jsx';
+import Feedback from './Feedback/Feedback.jsx';
+import Notification from './Notification/Notification.jsx';
+import Description from './Description/Description.jsx';
+import s from './App.module.css'
+
 
 const App = () => {
-  const initFeedback = JSON.parse(localStorage.getItem('feedback')) || {
+  const initialFeedback = JSON.parse(localStorage.getItem('feedback')) || {
     good: 0,
     neutral: 0,
     bad: 0,
   };
-  const [feedback, setFeedback] = useState(initFeedback);
+  const [feedback, setFeedback] = useState(initialFeedback);
 
   useEffect(() => {
     localStorage.setItem('feedback', JSON.stringify(feedback));
@@ -29,26 +30,20 @@ const App = () => {
   };
 
   const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
-  const positiveFeedback = Math.round(
-    (feedback.good / totalFeedback) * 100
-  );
+  const positiveFeedback = Math.round((feedback.good / totalFeedback) * 100);
 
   return (
-    <div>
+    <div className={s.app}>
       <h1>Sip Happens Café</h1>
-      <p>Please leave your feedback about our service by selecting one of the options below.</p>
+      <Description />
       <Options updateFeedback={updateFeedback} totalFeedback={totalFeedback} resetFeedback={resetFeedback} />
       {totalFeedback > 0 ? (
-        <>
-          <Feedback totalFeedback={totalFeedback} positiveFeedback={positiveFeedback} />
-          <Statistics feedback={feedback} />
-        </>
+        <Feedback feedback={feedback} totalFeedback={totalFeedback} positiveFeedback={positiveFeedback} />
       ) : (
-        <Notification message="Unfortunately there are no reviews yet." />
+        <Notification message="No feedback available" />
       )}
     </div>
   );
 };
 
-          
 export default App;
